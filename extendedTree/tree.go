@@ -1,4 +1,4 @@
-package gdstree
+package gdsexttree
 
 import (
 	"errors"
@@ -6,13 +6,13 @@ import (
 	"io"
 )
 
-// Graph
+// Graph defines the extended tree structure
 type Graph struct {
 	Root       []*Node
 	NodesIndex map[string]*Node
 }
 
-// AddNode
+// AddNode method includes a new node on the tree
 func (g *Graph) AddNode(n *Node) error {
 
 	if g == nil {
@@ -29,19 +29,23 @@ func (g *Graph) AddNode(n *Node) error {
 		if ok {
 			return errors.New("(graph::AddNode) Node '" + n.Name + "' already exists on the graph")
 		}
+
 		// add node to the graph
-		if n.Parent == nil {
+		if n.Parents == nil || len(n.Parents) == 0 {
 			g.Root = append(g.Root, n)
 		} else {
-			n.Parent.AddChild(n)
+			for _, parent := range n.Parents {
+				parent.AddChild(n)
+			}
 		}
+
 		g.NodesIndex[n.Name] = n
 	}
 
 	return nil
 }
 
-// AddNode
+// AddRelationship method update the parent-child relationship between two nodes
 func (g *Graph) AddRelationship(parent, child *Node) error {
 	var exist bool
 
@@ -65,6 +69,7 @@ func (g *Graph) AddRelationship(parent, child *Node) error {
 
 	child.AddParent(parent)
 
+	// remove child from root nodes when child node was defined on root nodes
 	for i := 0; i < len(g.Root); i++ {
 		if g.Root[i].Name == child.Name {
 			g.Root[i] = g.Root[len(g.Root)-1]
@@ -76,7 +81,7 @@ func (g *Graph) AddRelationship(parent, child *Node) error {
 	return nil
 }
 
-// DrawGraph
+// DrawGraph method prints the graph
 func (g *Graph) DrawGraph(w io.Writer) {
 
 	for _, root := range g.Root {
@@ -85,7 +90,7 @@ func (g *Graph) DrawGraph(w io.Writer) {
 	}
 }
 
-// drawGraphRec
+// drawGraphRec method walks along the tree to draw it
 func drawGrapRec(w io.Writer, prefix string, node *Node) {
 
 	fmt.Fprintln(w, prefix, node.Name)
@@ -95,6 +100,7 @@ func drawGrapRec(w io.Writer, prefix string, node *Node) {
 	}
 }
 
+// Exist return if a node already exists on the graph
 func (g *Graph) Exist(n *Node) bool {
 	if g == nil || g.NodesIndex == nil {
 		return false
@@ -103,7 +109,8 @@ func (g *Graph) Exist(n *Node) bool {
 	return exist
 }
 
-func (g *Graph) GetNode(n string) (*Node, error) {
+// GetNode method returns the node which matches to the gived name
+func (g *Graph) GetNode(nodeName string) (*Node, error) {
 	if g == nil {
 		return nil, errors.New("(graph::GetNode) Graph is nil")
 	}
@@ -112,9 +119,9 @@ func (g *Graph) GetNode(n string) (*Node, error) {
 		return nil, errors.New("(graph::GetNode) NodesIndex is nil")
 	}
 
-	node, exists := g.NodesIndex[n]
+	node, exists := g.NodesIndex[nodeName]
 	if !exists {
-		return nil, errors.New("(graph::GetNode) Node '" + n + "' does not exists on the graph")
+		return nil, errors.New("(graph::GetNode) Node '" + nodeName + "' does not exists on the graph")
 	}
 	return node, nil
 }
