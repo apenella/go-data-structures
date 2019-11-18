@@ -42,7 +42,7 @@ func (g *Graph) AddNode(n *Node) error {
 }
 
 // AddNode
-func (g *Graph) AddRelationship(parent *Node, child *Node) error {
+func (g *Graph) AddRelationship(parent, child *Node) error {
 	var exist bool
 
 	if g == nil {
