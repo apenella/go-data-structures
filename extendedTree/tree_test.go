@@ -2,9 +2,9 @@ package gdsexttree
 
 import (
 	"bytes"
-	"errors"
 	"testing"
 
+	errors "github.com/apenella/go-common-utils/error"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -45,7 +45,7 @@ func TestAddNode(t *testing.T) {
 			desc:  "Add Node to nil graph",
 			graph: nil,
 			node:  node,
-			err:   errors.New("(graph::AddNode) Adding a node to a nil graph"),
+			err:   errors.New("(graph::AddNode)", "Adding a node to a nil graph"),
 			res:   nil,
 		},
 		{
@@ -95,7 +95,7 @@ func TestAddNode(t *testing.T) {
 			node: &Node{
 				Name: "root",
 			},
-			err: errors.New("(graph::AddNode) Node 'root' already exists on the graph"),
+			err: errors.New("(graph::AddNode)", "Node 'root' already exists on the graph"),
 			res: nil,
 		},
 		{
@@ -258,7 +258,7 @@ func TestAddRelationship(t *testing.T) {
 			graph:  nil,
 			parent: nil,
 			node:   nil,
-			err:    errors.New("(graph::AddParentToNode) Graph is null"),
+			err:    errors.New("(graph::AddParentToNode)", "Graph is null"),
 			res:    nil,
 		},
 		{
@@ -266,7 +266,7 @@ func TestAddRelationship(t *testing.T) {
 			graph:  &Graph{},
 			parent: nil,
 			node:   nil,
-			err:    errors.New("(graph::AddParentToNode) Parent is null"),
+			err:    errors.New("(graph::AddParentToNode)", "Parent is null"),
 			res:    nil,
 		},
 		{
@@ -287,7 +287,7 @@ func TestAddRelationship(t *testing.T) {
 				Name: "root",
 			},
 			node: nil,
-			err:  errors.New("(graph::AddParentToNode) Child is null"),
+			err:  errors.New("(graph::AddParentToNode)", "Child is null"),
 			res:  nil,
 		},
 		{
@@ -363,7 +363,7 @@ func TestAddRelationship(t *testing.T) {
 			node: &Node{
 				Name: "orphan",
 			},
-			err: errors.New("(graph::AddParentToNode) Parent does not exist"),
+			err: errors.New("(graph::AddParentToNode)", "Parent does not exist"),
 			res: nil,
 		},
 		{
@@ -386,7 +386,7 @@ func TestAddRelationship(t *testing.T) {
 			node: &Node{
 				Name: "unexistent",
 			},
-			err: errors.New("(graph::AddParentToNode) Child does not exist"),
+			err: errors.New("(graph::AddParentToNode)", "Child does not exist"),
 			res: nil,
 		},
 	}
@@ -502,14 +502,14 @@ func TestGetNode(t *testing.T) {
 			},
 			node: "node2",
 			res:  nil,
-			err:  errors.New("(graph::GetNode) Node 'node2' does not exists on the graph"),
+			err:  errors.New("(graph::GetNode)", "Node 'node2' does not exists on the graph"),
 		},
 		{
 			desc:  "Search on a nil graph",
 			graph: nil,
 			node:  "node",
 			res:   nil,
-			err:   errors.New("(graph::GetNode) Graph is nil"),
+			err:   errors.New("(graph::GetNode)", "Graph is nil"),
 		},
 		{
 			desc: "Search on a nil nodesindex",
@@ -518,7 +518,7 @@ func TestGetNode(t *testing.T) {
 			},
 			node: "node",
 			res:  nil,
-			err:  errors.New("(graph::GetNode) NodesIndex is nil"),
+			err:  errors.New("(graph::GetNode)", "NodesIndex is nil"),
 		},
 	}
 

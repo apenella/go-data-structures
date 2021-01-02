@@ -1,7 +1,9 @@
 package gdsexttree
 
 import (
-	"errors"
+	"fmt"
+
+	errors "github.com/apenella/go-common-utils/error"
 )
 
 // Node is the extended tree graph node
@@ -15,11 +17,11 @@ type Node struct {
 // AddParent method update node's parents list adding a new one. It also update parent's childs list
 func (n *Node) AddParent(parent *Node) error {
 	if n == nil {
-		return errors.New("(graph::AddParent) Adding parent to a nil node")
+		return errors.New("(graph::AddParent)", "Adding parent to a nil node")
 	}
 
 	if parent == nil {
-		return errors.New("(graph::AddParent) Adding nil parent to node")
+		return errors.New("(graph::AddParent)", "Adding nil parent to node")
 	}
 
 	if n.Parents == nil || len(n.Parents) == 0 {
@@ -28,12 +30,14 @@ func (n *Node) AddParent(parent *Node) error {
 
 	if !n.HasParent(parent) {
 		n.Parents = append(n.Parents, parent)
+	} else {
+		return errors.New("(graph::AddParent)", fmt.Sprintf("Parent '%s' already exists to '%s'", parent.Name, n.Name))
 	}
 
 	// node node a parent childe
 	err := parent.AddChild(n)
 	if err != nil {
-		return errors.New("(graph:AddParent) -> " + err.Error())
+		return errors.New("(graph:AddParent)", fmt.Sprintf("Child could not be add to '%s'", parent.Name), err)
 	}
 
 	return nil
@@ -42,7 +46,7 @@ func (n *Node) AddParent(parent *Node) error {
 // AddChild method update node's childs list adding a new one
 func (n *Node) AddChild(child *Node) error {
 	if n == nil {
-		return errors.New("(graph::AddChild) Adding child to a nil node")
+		return errors.New("(graph::AddChild)", "Adding child to a nil node")
 	}
 	if n.Childs == nil || len(n.Childs) == 0 {
 		n.Childs = []*Node{}

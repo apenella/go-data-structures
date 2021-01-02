@@ -1,9 +1,9 @@
 package gdstree
 
 import (
-	"errors"
 	"testing"
 
+	errors "github.com/apenella/go-common-utils/error"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,7 +47,6 @@ func TestAddParent(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			desc: "Add parent to nil node",
 			node: nil,
@@ -57,10 +56,9 @@ func TestAddParent(t *testing.T) {
 				Childs: nil,
 				Item:   nil,
 			},
-			err: errors.New("(graph::AddParent) Adding parent to a nil node"),
+			err: errors.New("(graph::AddParent)", "Adding parent to a nil node"),
 			res: nil,
 		},
-
 		{
 			desc:   "Add nil parent to node",
 			parent: nil,
@@ -70,7 +68,7 @@ func TestAddParent(t *testing.T) {
 				Childs: nil,
 				Item:   nil,
 			},
-			err: errors.New("(graph:AddParent) -> (graph::AddChild) Adding child to a nil node"),
+			err: errors.New("(graph::AddParent)", "Parent is nil"),
 			res: nil,
 		},
 	}
@@ -169,7 +167,6 @@ func TestAddChild(t *testing.T) {
 				Parent: nil,
 			},
 		},
-
 		{
 			desc:   "Add child to nil parent",
 			parent: nil,
@@ -179,7 +176,19 @@ func TestAddChild(t *testing.T) {
 				Childs: nil,
 				Item:   nil,
 			},
-			err: errors.New("(graph::AddChild) Adding child to a nil node"),
+			err: errors.New("(graph::AddChild)", "Adding child to a nil node"),
+			res: nil,
+		},
+		{
+			desc: "Add nil child to parent",
+			node: nil,
+			parent: &Node{
+				Name:   "node",
+				Parent: nil,
+				Childs: nil,
+				Item:   nil,
+			},
+			err: errors.New("(graph::AddChild)", "Child is nil"),
 			res: nil,
 		},
 	}

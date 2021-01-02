@@ -1,9 +1,9 @@
 package gdsexttree
 
 import (
-	"errors"
 	"testing"
 
+	errors "github.com/apenella/go-common-utils/error"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -58,14 +58,14 @@ func TestAddParent(t *testing.T) {
 			desc:   "Add parent to nil node",
 			node:   nil,
 			parent: nodeParent,
-			err:    errors.New("(graph::AddParent) Adding parent to a nil node"),
+			err:    errors.New("(graph::AddParent)", "Adding parent to a nil node"),
 			res:    nil,
 		},
 		{
 			desc:   "Add nil parent to node",
 			parent: nil,
 			node:   nodeChild,
-			err:    errors.New("(graph::AddParent) Adding nil parent to node"),
+			err:    errors.New("(graph::AddParent)", "Adding nil parent to node"),
 			res:    nil,
 		},
 	}
@@ -161,7 +161,7 @@ func TestAddChild(t *testing.T) {
 			desc:   "Add child to nil parent",
 			parent: nil,
 			node:   nodeChild,
-			err:    errors.New("(graph::AddChild) Adding child to a nil node"),
+			err:    errors.New("(graph::AddChild)", "Adding child to a nil node"),
 			res:    nil,
 		},
 	}
