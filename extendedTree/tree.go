@@ -49,26 +49,30 @@ func (g *Graph) AddNode(n *Node) error {
 // AddRelationship method update the parent-child relationship between two nodes
 func (g *Graph) AddRelationship(parent, child *Node) error {
 	var exist bool
+	var err error
 
 	if g == nil {
-		return errors.New("(graph::AddParentToNode)", "Graph is null")
+		return errors.New("(graph::AddRelationship)", "Graph is null")
 	}
 	if parent == nil {
-		return errors.New("(graph::AddParentToNode)", "Parent is null")
+		return errors.New("(graph::AddRelationship)", "Parent is null")
 	}
 	if child == nil {
-		return errors.New("(graph::AddParentToNode)", "Child is null")
+		return errors.New("(graph::AddRelationship)", "Child is null")
 	}
 	_, exist = g.NodesIndex[parent.Name]
 	if !exist {
-		return errors.New("(graph::AddParentToNode)", "Parent does not exist")
+		return errors.New("(graph::AddRelationship)", "Parent does not exist")
 	}
 	_, exist = g.NodesIndex[child.Name]
 	if !exist {
-		return errors.New("(graph::AddParentToNode)", "Child does not exist")
+		return errors.New("(graph::AddRelationship)", "Child does not exist")
 	}
 
-	child.AddParent(parent)
+	err = child.AddParent(parent)
+	if err != nil {
+		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Parent can not be added to '%s'", child.Name), err)
+	}
 
 	// remove child from root nodes when child node was defined on root nodes
 	for i := 0; i < len(g.Root); i++ {

@@ -73,12 +73,12 @@ func (n *Node) HasChild(child *Node) bool {
 
 // HasParent method validate whether a parent node already exists in node's parent list. Two nodes are equal when they have the same node name
 func (n *Node) HasParent(parent *Node) bool {
-	hasParent := false
+
 	for _, p := range n.Parents {
 		if p.Name == parent.Name {
 			return true
 		}
 	}
 
-	return hasParent
+	return false
 }

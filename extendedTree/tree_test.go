@@ -242,7 +242,7 @@ func TestDrawGraph(t *testing.T) {
 	}
 }
 
-// TestAddParentToNode
+// TestAddRelationship
 func TestAddRelationship(t *testing.T) {
 
 	tests := []struct {
@@ -258,7 +258,7 @@ func TestAddRelationship(t *testing.T) {
 			graph:  nil,
 			parent: nil,
 			node:   nil,
-			err:    errors.New("(graph::AddParentToNode)", "Graph is null"),
+			err:    errors.New("(graph::AddRelationship)", "Graph is null"),
 			res:    nil,
 		},
 		{
@@ -266,7 +266,7 @@ func TestAddRelationship(t *testing.T) {
 			graph:  &Graph{},
 			parent: nil,
 			node:   nil,
-			err:    errors.New("(graph::AddParentToNode)", "Parent is null"),
+			err:    errors.New("(graph::AddRelationship)", "Parent is null"),
 			res:    nil,
 		},
 		{
@@ -287,7 +287,7 @@ func TestAddRelationship(t *testing.T) {
 				Name: "root",
 			},
 			node: nil,
-			err:  errors.New("(graph::AddParentToNode)", "Child is null"),
+			err:  errors.New("(graph::AddRelationship)", "Child is null"),
 			res:  nil,
 		},
 		{
@@ -363,7 +363,7 @@ func TestAddRelationship(t *testing.T) {
 			node: &Node{
 				Name: "orphan",
 			},
-			err: errors.New("(graph::AddParentToNode)", "Parent does not exist"),
+			err: errors.New("(graph::AddRelationship)", "Parent does not exist"),
 			res: nil,
 		},
 		{
@@ -386,7 +386,52 @@ func TestAddRelationship(t *testing.T) {
 			node: &Node{
 				Name: "unexistent",
 			},
-			err: errors.New("(graph::AddParentToNode)", "Child does not exist"),
+			err: errors.New("(graph::AddRelationship)", "Child does not exist"),
+			res: nil,
+		},
+
+		{
+			desc: "Add relationship already defined",
+			graph: &Graph{
+				Root: []*Node{
+					{
+						Name: "root",
+					},
+					{
+						Name: "child",
+						Parents: []*Node{
+							{
+								Name: "root",
+							},
+						},
+					},
+				},
+				NodesIndex: map[string]*Node{
+					"root": {
+						Name: "root",
+					},
+					"child": {
+						Name: "child",
+						Parents: []*Node{
+							{
+								Name: "root",
+							},
+						},
+					},
+				},
+			},
+			parent: &Node{
+				Name: "root",
+			},
+			node: &Node{
+				Name: "child",
+				Parents: []*Node{
+					{
+						Name: "root",
+					},
+				},
+			},
+			err: errors.New("(graph::AddRelationship)", "Parent can not be added to 'child'", errors.New("(graph::AddParent)", "Parent 'root' already exists to 'child'")),
 			res: nil,
 		},
 	}
