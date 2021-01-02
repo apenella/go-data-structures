@@ -20,7 +20,7 @@ jobs:
     - name: Setup Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.15.0'
+        go-version: ^1.15
 
     - name: Test tree package
       run: |
@@ -31,7 +31,7 @@ jobs:
 
     - name: Test extendedTree package
       run: |
-        cd tree
+        cd extendedTree
         go mod download
         go test -count=1 -cover -v
         cd -
