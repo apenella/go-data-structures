@@ -82,6 +82,9 @@ func (g *Graph) AddRelationship(parent, child *Node) error {
 			break
 		}
 	}
+	if len(g.Root) < 1 {
+		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Relationship from '%s' to '%s' caused an empty list of root nodes. It could be caused by cyclic definition", parent.Name, child.Name))
+	}
 
 	return nil
 }
@@ -103,6 +106,37 @@ func drawGrapRec(w io.Writer, prefix string, node *Node) {
 	for _, child := range node.Childs {
 		drawGrapRec(w, prefix, child)
 	}
+}
+
+// HasCycles returns whether a cyclic dependency exists on the whole graph. It calls hasCyclesRec by each root node
+func (g *Graph) HasCycles() bool {
+	for _, root := range g.Root {
+		v := map[string]int8{}
+		if hasCyclesRec(root, v) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// hasCyclesRec returns whether a cyclic dependency
+func hasCyclesRec(node *Node, visitedNodes map[string]int8) bool {
+
+	_, exists := visitedNodes[node.Name]
+	if exists {
+		return true
+	}
+
+	visitedNodes[node.Name] = int8(0)
+
+	for _, child := range node.Childs {
+		if hasCyclesRec(child, visitedNodes) {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Exist return if a node already exists on the graph

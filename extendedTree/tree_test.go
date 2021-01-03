@@ -170,15 +170,18 @@ func TestAddNode(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Log(test.desc)
 
-		err := test.graph.AddNode(test.node)
-		if err != nil && assert.Error(t, err) {
-			assert.Equal(t, test.err, err)
-		} else {
-			assert.Equal(t, len(test.graph.Root), len(test.res.Root), "Root size not equal")
-			assert.Equal(t, len(test.graph.NodesIndex), len(test.res.NodesIndex), "Root size not equal")
-		}
+		t.Run(test.desc, func(t *testing.T) {
+			t.Log(test.desc)
+
+			err := test.graph.AddNode(test.node)
+			if err != nil && assert.Error(t, err) {
+				assert.Equal(t, test.err, err)
+			} else {
+				assert.Equal(t, len(test.graph.Root), len(test.res.Root), "Root size not equal")
+				assert.Equal(t, len(test.graph.NodesIndex), len(test.res.NodesIndex), "Root size not equal")
+			}
+		})
 	}
 }
 
@@ -235,10 +238,13 @@ func TestDrawGraph(t *testing.T) {
 
 	var w bytes.Buffer
 	for _, test := range tests {
-		t.Log(test.desc)
 
-		test.graph.DrawGraph(&w)
-		assert.Equal(t, test.res, w.String(), "Output not equal")
+		t.Run(test.desc, func(t *testing.T) {
+			t.Log(test.desc)
+			w.Reset()
+			test.graph.DrawGraph(&w)
+			assert.Equal(t, test.res, w.String(), "Output not equal")
+		})
 	}
 }
 
@@ -389,7 +395,6 @@ func TestAddRelationship(t *testing.T) {
 			err: errors.New("(graph::AddRelationship)", "Child does not exist"),
 			res: nil,
 		},
-
 		{
 			desc: "Add relationship already defined",
 			graph: &Graph{
@@ -437,16 +442,116 @@ func TestAddRelationship(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Log(test.desc)
 
-		err := test.graph.AddRelationship(test.parent, test.node)
-		if err != nil && assert.Error(t, err) {
-			assert.Equal(t, test.err, err)
-		} else {
-			assert.Equal(t, len(test.graph.Root), len(test.res.Root), "Root size not equal")
-			assert.Equal(t, len(test.graph.NodesIndex), len(test.res.NodesIndex), "Root size not equal")
-		}
+		t.Run(test.desc, func(t *testing.T) {
+			t.Log(test.desc)
+
+			err := test.graph.AddRelationship(test.parent, test.node)
+			if err != nil && assert.Error(t, err) {
+				assert.Equal(t, test.err, err)
+			} else {
+				assert.Equal(t, len(test.graph.Root), len(test.res.Root), "Root size not equal")
+				assert.Equal(t, len(test.graph.NodesIndex), len(test.res.NodesIndex), "Root size not equal")
+			}
+		})
 	}
+}
+
+func TestHasCycles(t *testing.T) {
+
+	var parent1, p1child1, p1child2, p1child3 *Node
+
+	type relationship struct {
+		Parent, Child *Node
+	}
+
+	parent1 = &Node{
+		Name: "parent1",
+	}
+	p1child1 = &Node{
+		Name: "p1child1",
+	}
+	p1child2 = &Node{
+		Name: "p1child2",
+	}
+	p1child3 = &Node{
+		Name: "p1child3",
+	}
+
+	tests := []struct {
+		desc      string
+		graph     *Graph
+		res       bool
+		relations []relationship
+	}{
+		{
+			desc: "Testing cyclic graph",
+			graph: &Graph{
+				Root: []*Node{parent1},
+				NodesIndex: map[string]*Node{
+					"parent1":  parent1,
+					"p1child1": p1child1,
+					"p1child2": p1child2,
+					"p1child3": p1child3,
+				},
+			},
+			relations: []relationship{
+				{parent1, p1child1},
+				{parent1, p1child2},
+				{p1child1, p1child3},
+				{p1child3, p1child1},
+			},
+			res: true,
+		},
+		{
+			desc: "Testing non cyclic graph",
+			graph: &Graph{
+				Root: []*Node{parent1},
+				NodesIndex: map[string]*Node{
+					"parent1":  parent1,
+					"p1child1": p1child1,
+					"p1child2": p1child2,
+					"p1child3": p1child3,
+				},
+			},
+			relations: []relationship{
+				{parent1, p1child1},
+				{parent1, p1child2},
+				{p1child1, p1child3},
+			},
+			res: false,
+		},
+	}
+
+	clearNodes := func() {
+		parent1.Childs = []*Node{}
+		p1child1.Childs = []*Node{}
+		p1child2.Childs = []*Node{}
+		p1child3.Childs = []*Node{}
+		parent1.Parents = []*Node{}
+		p1child1.Parents = []*Node{}
+		p1child2.Parents = []*Node{}
+		p1child3.Parents = []*Node{}
+	}
+
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Log(test.desc)
+
+			clearNodes()
+
+			for _, relation := range test.relations {
+				err := test.graph.AddRelationship(relation.Parent, relation.Child)
+				if err != nil {
+					t.Errorf(err.Error())
+				}
+			}
+
+			res := test.graph.HasCycles()
+			assert.Equal(t, test.res, res)
+		})
+	}
+
 }
 
 func TestExist(t *testing.T) {
@@ -505,11 +610,13 @@ func TestExist(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Log(test.desc)
 
-		exists := test.graph.Exist(test.node)
-		assert.Equal(t, exists, test.res, "Unexpected return of existence")
+		t.Run(test.desc, func(t *testing.T) {
+			t.Log(test.desc)
 
+			exists := test.graph.Exist(test.node)
+			assert.Equal(t, exists, test.res, "Unexpected return of existence")
+		})
 	}
 }
 
@@ -568,13 +675,16 @@ func TestGetNode(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Log(test.desc)
 
-		node, err := test.graph.GetNode(test.node)
-		if err != nil && assert.Error(t, err) {
-			assert.Equal(t, test.err, err)
-		} else {
-			assert.Equal(t, test.res, node, "Unexpected node")
-		}
+		t.Run(test.desc, func(t *testing.T) {
+			t.Log(test.desc)
+
+			node, err := test.graph.GetNode(test.node)
+			if err != nil && assert.Error(t, err) {
+				assert.Equal(t, test.err, err)
+			} else {
+				assert.Equal(t, test.res, node, "Unexpected node")
+			}
+		})
 	}
 }
