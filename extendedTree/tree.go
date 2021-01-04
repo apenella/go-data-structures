@@ -82,8 +82,13 @@ func (g *Graph) AddRelationship(parent, child *Node) error {
 			break
 		}
 	}
+
+	if hasCyclesRec(parent, map[string]int8{}) {
+		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Cycle detected adding relationship from '%s' to '%s'", parent.Name, child.Name))
+	}
+
 	if len(g.Root) < 1 {
-		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Relationship from '%s' to '%s' caused an empty list of root nodes. It could be caused by cyclic definition", parent.Name, child.Name))
+		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Relationship from '%s' to '%s' caused an empty list of root nodes", parent.Name, child.Name))
 	}
 
 	return nil
@@ -111,8 +116,7 @@ func drawGrapRec(w io.Writer, prefix string, node *Node) {
 // HasCycles returns whether a cyclic dependency exists on the whole graph. It calls hasCyclesRec by each root node
 func (g *Graph) HasCycles() bool {
 	for _, root := range g.Root {
-		v := map[string]int8{}
-		if hasCyclesRec(root, v) {
+		if hasCyclesRec(root, map[string]int8{}) {
 			return true
 		}
 	}

@@ -41,7 +41,7 @@ func TestAddParent(t *testing.T) {
 				Childs: nil,
 				Item:   nil,
 				Parents: []*Node{
-					&Node{
+					{
 						Name:    "parent",
 						Parents: nil,
 						Childs: []*Node{
@@ -131,7 +131,7 @@ func TestAddChild(t *testing.T) {
 			res: &Node{
 				Name: "parent",
 				Childs: []*Node{
-					&Node{
+					{
 						Name:    "node",
 						Parents: nil,
 						Childs:  nil,

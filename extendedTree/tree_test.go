@@ -439,6 +439,65 @@ func TestAddRelationship(t *testing.T) {
 			err: errors.New("(graph::AddRelationship)", "Parent can not be added to 'child'", errors.New("(graph::AddParent)", "Parent 'root' already exists to 'child'")),
 			res: nil,
 		},
+		{
+			desc: "Add cyclic relationship",
+			graph: &Graph{
+				Root: []*Node{
+					{
+						Name: "root",
+						Childs: []*Node{
+							{
+								Name: "child",
+								Parents: []*Node{
+									{
+										Name: "root",
+									},
+								},
+							},
+						},
+					},
+				},
+				NodesIndex: map[string]*Node{
+					"root": {
+						Name: "root",
+						Childs: []*Node{
+							{
+								Name: "child",
+								Parents: []*Node{
+									{
+										Name: "root",
+									},
+								},
+							},
+						},
+					},
+					"child": {
+						Name: "child",
+						Parents: []*Node{
+							{
+								Name: "root",
+							},
+						},
+					},
+				},
+			},
+			parent: &Node{
+				Name: "child",
+				Parents: []*Node{
+					{Name: "root"},
+				},
+			},
+			node: &Node{
+				Name: "root",
+				Childs: []*Node{
+					{
+						Name: "child",
+					},
+				},
+			},
+			err: errors.New("(graph::AddRelationship)", "Cycle detected adding relationship from 'child' to 'root'"),
+			res: nil,
+		},
 	}
 
 	for _, test := range tests {
@@ -459,93 +518,80 @@ func TestAddRelationship(t *testing.T) {
 
 func TestHasCycles(t *testing.T) {
 
-	var parent1, p1child1, p1child2, p1child3 *Node
-
-	type relationship struct {
-		Parent, Child *Node
-	}
-
-	parent1 = &Node{
-		Name: "parent1",
-	}
-	p1child1 = &Node{
-		Name: "p1child1",
-	}
-	p1child2 = &Node{
-		Name: "p1child2",
-	}
-	p1child3 = &Node{
-		Name: "p1child3",
-	}
-
 	tests := []struct {
-		desc      string
-		graph     *Graph
-		res       bool
-		relations []relationship
+		desc  string
+		graph *Graph
+		res   bool
 	}{
 		{
 			desc: "Testing cyclic graph",
 			graph: &Graph{
-				Root: []*Node{parent1},
-				NodesIndex: map[string]*Node{
-					"parent1":  parent1,
-					"p1child1": p1child1,
-					"p1child2": p1child2,
-					"p1child3": p1child3,
+				Root: []*Node{
+					{
+						Name: "parent1",
+						Childs: []*Node{
+							{
+								Name: "p1child1",
+								Parents: []*Node{
+									{Name: "parent1"},
+								},
+								Childs: []*Node{
+									{
+										Name: "p1child3",
+										Parents: []*Node{
+											{Name: "p1child1"},
+										},
+										Childs: []*Node{
+											{Name: "parent1"},
+										},
+									},
+								},
+							},
+							{Name: "p1child2"},
+						},
+					},
 				},
-			},
-			relations: []relationship{
-				{parent1, p1child1},
-				{parent1, p1child2},
-				{p1child1, p1child3},
-				{p1child3, p1child1},
+				NodesIndex: map[string]*Node{
+					"parent1": {
+						Name: "parent1",
+						Childs: []*Node{
+							{Name: "p1child1"},
+							{Name: "p1child2"},
+						},
+					},
+					"p1child1": {
+						Name: "p1child1",
+						Parents: []*Node{
+							{Name: "parent1"},
+						},
+						Childs: []*Node{
+							{Name: "p1child3"},
+						},
+					},
+					"p1child2": {
+						Name: "p1child2",
+						Parents: []*Node{
+							{Name: "parent1"},
+						},
+					},
+					"p1child3": {
+						Name: "p1child3",
+						Parents: []*Node{
+							{Name: "p1child1"},
+						},
+						Childs: []*Node{
+							{Name: "parent1"},
+						},
+					},
+				},
 			},
 			res: true,
 		},
-		{
-			desc: "Testing non cyclic graph",
-			graph: &Graph{
-				Root: []*Node{parent1},
-				NodesIndex: map[string]*Node{
-					"parent1":  parent1,
-					"p1child1": p1child1,
-					"p1child2": p1child2,
-					"p1child3": p1child3,
-				},
-			},
-			relations: []relationship{
-				{parent1, p1child1},
-				{parent1, p1child2},
-				{p1child1, p1child3},
-			},
-			res: false,
-		},
-	}
-
-	clearNodes := func() {
-		parent1.Childs = []*Node{}
-		p1child1.Childs = []*Node{}
-		p1child2.Childs = []*Node{}
-		p1child3.Childs = []*Node{}
-		parent1.Parents = []*Node{}
-		p1child1.Parents = []*Node{}
-		p1child2.Parents = []*Node{}
-		p1child3.Parents = []*Node{}
 	}
 
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {
 			t.Log(test.desc)
-
-			clearNodes()
-
-			for _, relation := range test.relations {
-				err := test.graph.AddRelationship(relation.Parent, relation.Child)
-				if err != nil {
-					t.Errorf(err.Error())
-				}
-			}
 
 			res := test.graph.HasCycles()
 			assert.Equal(t, test.res, res)
