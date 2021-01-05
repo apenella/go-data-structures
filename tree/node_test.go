@@ -19,26 +19,26 @@ func TestAddParent(t *testing.T) {
 		{
 			desc: "Add parent node",
 			node: &Node{
-				Name:   "node",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			parent: &Node{
-				Name:   "parent",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "parent",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			err: nil,
 			res: &Node{
-				Name:   "node",
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Children: nil,
+				Item:     nil,
 				Parent: &Node{
 					Name:   "parent",
 					Parent: nil,
-					Childs: []*Node{
+					Children: []*Node{
 						{
 							Name: "node",
 						},
@@ -51,10 +51,10 @@ func TestAddParent(t *testing.T) {
 			desc: "Add parent to nil node",
 			node: nil,
 			parent: &Node{
-				Name:   "parent",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "parent",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			err: errors.New("(graph::AddParent)", "Adding parent to a nil node"),
 			res: nil,
@@ -63,10 +63,10 @@ func TestAddParent(t *testing.T) {
 			desc:   "Add nil parent to node",
 			parent: nil,
 			node: &Node{
-				Name:   "node",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			err: errors.New("(graph::AddParent)", "Parent is nil"),
 			res: nil,
@@ -82,7 +82,7 @@ func TestAddParent(t *testing.T) {
 		} else {
 			assert.Equal(t, test.res.Name, test.node.Name, "Name not equal")
 			assert.Equal(t, test.res.Parent.Name, test.node.Parent.Name, "Parent name not equal")
-			assert.Equal(t, len(test.res.Parent.Childs), len(test.node.Parent.Childs), "Parent childs length not equal")
+			assert.Equal(t, len(test.res.Parent.Children), len(test.node.Parent.Children), "Parent childs length not equal")
 		}
 	}
 }
@@ -99,26 +99,26 @@ func TestAddChild(t *testing.T) {
 		{
 			desc: "Add child to node",
 			node: &Node{
-				Name:   "node",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			parent: &Node{
-				Name:   "parent",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "parent",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			err: nil,
 			res: &Node{
 				Name: "parent",
-				Childs: []*Node{
+				Children: []*Node{
 					&Node{
-						Name:   "node",
-						Parent: nil,
-						Childs: nil,
-						Item:   nil,
+						Name:     "node",
+						Parent:   nil,
+						Children: nil,
+						Item:     nil,
 					},
 				},
 				Item:   nil,
@@ -128,20 +128,20 @@ func TestAddChild(t *testing.T) {
 		{
 			desc: "Add second child to node",
 			node: &Node{
-				Name:   "node2",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node2",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			parent: &Node{
 				Name:   "parent",
 				Parent: nil,
-				Childs: []*Node{
+				Children: []*Node{
 					{
-						Name:   "node",
-						Parent: nil,
-						Childs: nil,
-						Item:   nil,
+						Name:     "node",
+						Parent:   nil,
+						Children: nil,
+						Item:     nil,
 					},
 				},
 				Item: nil,
@@ -149,18 +149,18 @@ func TestAddChild(t *testing.T) {
 			err: nil,
 			res: &Node{
 				Name: "parent",
-				Childs: []*Node{
+				Children: []*Node{
 					{
-						Name:   "node",
-						Parent: nil,
-						Childs: nil,
-						Item:   nil,
+						Name:     "node",
+						Parent:   nil,
+						Children: nil,
+						Item:     nil,
 					},
 					{
-						Name:   "node2",
-						Parent: nil,
-						Childs: nil,
-						Item:   nil,
+						Name:     "node2",
+						Parent:   nil,
+						Children: nil,
+						Item:     nil,
 					},
 				},
 				Item:   nil,
@@ -171,10 +171,10 @@ func TestAddChild(t *testing.T) {
 			desc:   "Add child to nil parent",
 			parent: nil,
 			node: &Node{
-				Name:   "node",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			err: errors.New("(graph::AddChild)", "Adding child to a nil node"),
 			res: nil,
@@ -183,10 +183,10 @@ func TestAddChild(t *testing.T) {
 			desc: "Add nil child to parent",
 			node: nil,
 			parent: &Node{
-				Name:   "node",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			err: errors.New("(graph::AddChild)", "Child is nil"),
 			res: nil,
@@ -217,16 +217,16 @@ func TestHasChild(t *testing.T) {
 		{
 			desc: "Node is not a child",
 			node: &Node{
-				Name:   "node",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			parent: &Node{
-				Name:   "parent",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "parent",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			err: nil,
 			res: false,
@@ -235,20 +235,20 @@ func TestHasChild(t *testing.T) {
 		{
 			desc: "Node is not a child",
 			node: &Node{
-				Name:   "node",
-				Parent: nil,
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Parent:   nil,
+				Children: nil,
+				Item:     nil,
 			},
 			parent: &Node{
 				Name:   "parent",
 				Parent: nil,
-				Childs: []*Node{
+				Children: []*Node{
 					{
-						Name:   "node",
-						Parent: nil,
-						Childs: nil,
-						Item:   nil,
+						Name:     "node",
+						Parent:   nil,
+						Children: nil,
+						Item:     nil,
 					},
 				},
 				Item: nil,
