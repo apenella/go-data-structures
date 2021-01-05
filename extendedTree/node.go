@@ -8,10 +8,10 @@ import (
 
 // Node is the extended tree graph node
 type Node struct {
-	Name    string
-	Item    interface{}
-	Parents []*Node
-	Childs  []*Node
+	Name     string
+	Item     interface{}
+	Parents  []*Node
+	Children []*Node
 }
 
 // AddParent method update node's parents list adding a new one. It also update parent's childs list
@@ -48,12 +48,12 @@ func (n *Node) AddChild(child *Node) error {
 	if n == nil {
 		return errors.New("(graph::AddChild)", "Adding child to a nil node")
 	}
-	if n.Childs == nil || len(n.Childs) == 0 {
-		n.Childs = []*Node{}
+	if n.Children == nil || len(n.Children) == 0 {
+		n.Children = []*Node{}
 	}
 
 	if !n.HasChild(child) {
-		n.Childs = append(n.Childs, child)
+		n.Children = append(n.Children, child)
 	}
 
 	return nil
@@ -62,7 +62,7 @@ func (n *Node) AddChild(child *Node) error {
 // HasChild method validate whether a child node already exists in node's child list. Two nodes are equal when they have the same node name
 func (n *Node) HasChild(child *Node) bool {
 	hasChild := false
-	for _, c := range n.Childs {
+	for _, c := range n.Children {
 		if c.Name == child.Name {
 			return true
 		}
