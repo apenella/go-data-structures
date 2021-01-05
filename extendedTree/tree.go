@@ -50,7 +50,6 @@ func (g *Graph) AddNode(n *Node) error {
 func (g *Graph) AddRelationship(parent, child *Node) error {
 	var exist bool
 	var err error
-	var p, c *Node
 
 	if g == nil {
 		return errors.New("(graph::AddRelationship)", "Graph is null")
@@ -61,18 +60,20 @@ func (g *Graph) AddRelationship(parent, child *Node) error {
 	if child == nil {
 		return errors.New("(graph::AddRelationship)", "Child is null")
 	}
-	p, exist = g.NodesIndex[parent.Name]
+
+	_, exist = g.NodesIndex[parent.Name]
 	if !exist {
 		return errors.New("(graph::AddRelationship)", "Parent does not exist")
 	}
-	c, exist = g.NodesIndex[child.Name]
+
+	_, exist = g.NodesIndex[child.Name]
 	if !exist {
 		return errors.New("(graph::AddRelationship)", "Child does not exist")
 	}
 
-	err = c.AddParent(p)
+	err = child.AddParent(parent)
 	if err != nil {
-		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Parent can not be added to '%s'", c.Name), err)
+		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Parent can not be added to '%s'", child.Name), err)
 	}
 
 	// remove child from root nodes when child node was defined on root nodes
@@ -84,12 +85,9 @@ func (g *Graph) AddRelationship(parent, child *Node) error {
 		}
 	}
 
-	if hasCyclesRec(p, map[string]int8{}) {
-		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Cycle detected adding relationship from '%s' to '%s'", p.Name, c.Name))
-	}
-
-	if len(g.Root) < 1 {
-		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Relationship from '%s' to '%s' caused an empty list of root nodes", p.Name, c.Name))
+	// returns an error when the new relationship has generated a cycle
+	if hasCyclesRec(parent, map[string]int8{}) {
+		return errors.New("(graph::AddRelationship)", fmt.Sprintf("Cycle detected adding relationship from '%s' to '%s'", parent.Name, child.Name))
 	}
 
 	return nil
@@ -133,10 +131,15 @@ func hasCyclesRec(node *Node, visitedNodes map[string]int8) bool {
 		return true
 	}
 
-	visitedNodes[node.Name] = int8(0)
+	nv := map[string]int8{}
+	for k, v := range visitedNodes {
+		nv[k] = v
+	}
+
+	nv[node.Name] = int8(0)
 
 	for _, child := range node.Childs {
-		if hasCyclesRec(child, visitedNodes) {
+		if hasCyclesRec(child, nv) {
 			return true
 		}
 	}
