@@ -91,7 +91,7 @@ func drawGrapRec(w io.Writer, prefix string, node *Node) {
 
 	fmt.Fprintln(w, prefix, node.Name)
 	prefix = "  " + prefix
-	for _, child := range node.Childs {
+	for _, child := range node.Children {
 		drawGrapRec(w, prefix, child)
 	}
 }

@@ -8,10 +8,10 @@ import (
 
 // Node
 type Node struct {
-	Name   string
-	Parent *Node
-	Item   interface{}
-	Childs []*Node
+	Name     string
+	Parent   *Node
+	Item     interface{}
+	Children []*Node
 }
 
 // AddChild
@@ -47,12 +47,12 @@ func (n *Node) AddChild(child *Node) error {
 		return errors.New("(graph::AddChild)", "Child is nil")
 	}
 
-	if n.Childs == nil || len(n.Childs) == 0 {
-		n.Childs = []*Node{}
+	if n.Children == nil || len(n.Children) == 0 {
+		n.Children = []*Node{}
 	}
 
 	if !n.HasChild(child) {
-		n.Childs = append(n.Childs, child)
+		n.Children = append(n.Children, child)
 	}
 
 	return nil
@@ -60,7 +60,7 @@ func (n *Node) AddChild(child *Node) error {
 
 func (n *Node) HasChild(child *Node) bool {
 	hasChild := false
-	for _, c := range n.Childs {
+	for _, c := range n.Children {
 		if c.Name == child.Name {
 			return true
 		}
