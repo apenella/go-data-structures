@@ -12,10 +12,10 @@ import (
 func TestAddNode(t *testing.T) {
 
 	node := &Node{
-		Name:    "node",
-		Parents: nil,
-		Item:    "string item",
-		Childs:  nil,
+		Name:     "node",
+		Parents:  nil,
+		Item:     "string item",
+		Children: nil,
 	}
 
 	node2 := &Node{
@@ -23,15 +23,15 @@ func TestAddNode(t *testing.T) {
 		Parents: []*Node{
 			node,
 		},
-		Item:   "string item",
-		Childs: nil,
+		Item:     "string item",
+		Children: nil,
 	}
 
 	node3 := &Node{
-		Name:    "node3",
-		Parents: nil,
-		Item:    "string item",
-		Childs:  nil,
+		Name:     "node3",
+		Parents:  nil,
+		Item:     "string item",
+		Children: nil,
 	}
 
 	tests := []struct {
@@ -116,14 +116,14 @@ func TestAddNode(t *testing.T) {
 						Name:    "node",
 						Parents: nil,
 						Item:    "string item",
-						Childs: []*Node{
+						Children: []*Node{
 							{
 								Name: "node2",
 								Parents: []*Node{
 									node,
 								},
-								Item:   "string item",
-								Childs: nil,
+								Item:     "string item",
+								Children: nil,
 							},
 						},
 					},
@@ -149,16 +149,16 @@ func TestAddNode(t *testing.T) {
 			res: &Graph{
 				Root: []*Node{
 					{
-						Name:    "node",
-						Parents: nil,
-						Item:    "string item",
-						Childs:  nil,
+						Name:     "node",
+						Parents:  nil,
+						Item:     "string item",
+						Children: nil,
 					},
 					{
-						Name:    "node3",
-						Parents: nil,
-						Item:    "string item",
-						Childs:  nil,
+						Name:     "node3",
+						Parents:  nil,
+						Item:     "string item",
+						Children: nil,
 					},
 				},
 				NodesIndex: map[string]*Node{
@@ -206,26 +206,26 @@ func TestDrawGraph(t *testing.T) {
 				Root: []*Node{
 					{
 						Name: "root",
-						Childs: []*Node{
+						Children: []*Node{
 							{
 								Name: "level1-sibling1",
-								Childs: []*Node{
+								Children: []*Node{
 									{
-										Name:   "level2-sibling1",
-										Childs: nil,
+										Name:     "level2-sibling1",
+										Children: nil,
 									},
 								},
 							},
 							{
 								Name: "level1-sibling2",
-								Childs: []*Node{
+								Children: []*Node{
 									{
-										Name:   "level2-sibling1",
-										Childs: nil,
+										Name:     "level2-sibling1",
+										Children: nil,
 									},
 									{
-										Name:   "level2-sibling2",
-										Childs: nil,
+										Name:     "level2-sibling2",
+										Children: nil,
 									},
 								},
 							},
@@ -445,7 +445,7 @@ func TestAddRelationship(t *testing.T) {
 				Root: []*Node{
 					{
 						Name: "root",
-						Childs: []*Node{
+						Children: []*Node{
 							{
 								Name: "child",
 								Parents: []*Node{
@@ -460,7 +460,7 @@ func TestAddRelationship(t *testing.T) {
 				NodesIndex: map[string]*Node{
 					"root": {
 						Name: "root",
-						Childs: []*Node{
+						Children: []*Node{
 							{
 								Name: "child",
 								Parents: []*Node{
@@ -489,7 +489,7 @@ func TestAddRelationship(t *testing.T) {
 			},
 			node: &Node{
 				Name: "root",
-				Childs: []*Node{
+				Children: []*Node{
 					{
 						Name: "child",
 					},
@@ -529,19 +529,19 @@ func TestHasCycles(t *testing.T) {
 				Root: []*Node{
 					{
 						Name: "parent1",
-						Childs: []*Node{
+						Children: []*Node{
 							{
 								Name: "p1child1",
 								Parents: []*Node{
 									{Name: "parent1"},
 								},
-								Childs: []*Node{
+								Children: []*Node{
 									{
 										Name: "p1child3",
 										Parents: []*Node{
 											{Name: "p1child1"},
 										},
-										Childs: []*Node{
+										Children: []*Node{
 											{Name: "parent1"},
 										},
 									},
@@ -554,7 +554,7 @@ func TestHasCycles(t *testing.T) {
 				NodesIndex: map[string]*Node{
 					"parent1": {
 						Name: "parent1",
-						Childs: []*Node{
+						Children: []*Node{
 							{Name: "p1child1"},
 							{Name: "p1child2"},
 						},
@@ -564,7 +564,7 @@ func TestHasCycles(t *testing.T) {
 						Parents: []*Node{
 							{Name: "parent1"},
 						},
-						Childs: []*Node{
+						Children: []*Node{
 							{Name: "p1child3"},
 						},
 					},
@@ -579,7 +579,7 @@ func TestHasCycles(t *testing.T) {
 						Parents: []*Node{
 							{Name: "p1child1"},
 						},
-						Childs: []*Node{
+						Children: []*Node{
 							{Name: "parent1"},
 						},
 					},

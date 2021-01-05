@@ -107,7 +107,7 @@ func drawGrapRec(w io.Writer, prefix string, node *Node) {
 
 	fmt.Fprintln(w, prefix, node.Name)
 	prefix = "  " + prefix
-	for _, child := range node.Childs {
+	for _, child := range node.Children {
 		drawGrapRec(w, prefix, child)
 	}
 }
@@ -138,7 +138,7 @@ func hasCyclesRec(node *Node, visitedNodes map[string]int8) bool {
 
 	nv[node.Name] = int8(0)
 
-	for _, child := range node.Childs {
+	for _, child := range node.Children {
 		if hasCyclesRec(child, nv) {
 			return true
 		}

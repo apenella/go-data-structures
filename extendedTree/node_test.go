@@ -11,17 +11,17 @@ import (
 func TestAddParent(t *testing.T) {
 
 	nodeChild := &Node{
-		Name:    "node",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "node",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	nodeParent := &Node{
-		Name:    "parent",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "parent",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	tests := []struct {
@@ -37,14 +37,14 @@ func TestAddParent(t *testing.T) {
 			parent: nodeParent,
 			err:    nil,
 			res: &Node{
-				Name:   "node",
-				Childs: nil,
-				Item:   nil,
+				Name:     "node",
+				Children: nil,
+				Item:     nil,
 				Parents: []*Node{
 					{
 						Name:    "parent",
 						Parents: nil,
-						Childs: []*Node{
+						Children: []*Node{
 							{
 								Name: "node",
 							},
@@ -87,30 +87,30 @@ func TestAddParent(t *testing.T) {
 func TestAddChild(t *testing.T) {
 
 	nodeChild := &Node{
-		Name:    "node",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "node",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	nodeChild2 := &Node{
-		Name:    "node2",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "node2",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	nodeParent := &Node{
-		Name:    "parent",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "parent",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	nodeParent2 := &Node{
 		Name:    "parent2",
 		Parents: nil,
-		Childs: []*Node{
+		Children: []*Node{
 			nodeChild,
 		},
 		Item: nil,
@@ -130,12 +130,12 @@ func TestAddChild(t *testing.T) {
 			err:    nil,
 			res: &Node{
 				Name: "parent",
-				Childs: []*Node{
+				Children: []*Node{
 					{
-						Name:    "node",
-						Parents: nil,
-						Childs:  nil,
-						Item:    nil,
+						Name:     "node",
+						Parents:  nil,
+						Children: nil,
+						Item:     nil,
 					},
 				},
 				Item:    nil,
@@ -149,7 +149,7 @@ func TestAddChild(t *testing.T) {
 			err:    nil,
 			res: &Node{
 				Name: "parent2",
-				Childs: []*Node{
+				Children: []*Node{
 					nodeChild,
 					nodeChild2,
 				},
@@ -181,17 +181,17 @@ func TestAddChild(t *testing.T) {
 func TestHasChild(t *testing.T) {
 
 	nodeChild := &Node{
-		Name:    "node",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "node",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	nodeParent := &Node{
-		Name:    "parent",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "parent",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	tests := []struct {
@@ -215,7 +215,7 @@ func TestHasChild(t *testing.T) {
 			parent: &Node{
 				Name:    "parent",
 				Parents: nil,
-				Childs: []*Node{
+				Children: []*Node{
 					nodeChild,
 				},
 				Item: nil,
@@ -237,17 +237,17 @@ func TestHasChild(t *testing.T) {
 func TestHasParent(t *testing.T) {
 
 	nodeParent := &Node{
-		Name:    "parent",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "parent",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	nodeParent2 := &Node{
-		Name:    "parent2",
-		Parents: nil,
-		Childs:  nil,
-		Item:    nil,
+		Name:     "parent2",
+		Parents:  nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	nodeChild := &Node{
@@ -255,8 +255,8 @@ func TestHasParent(t *testing.T) {
 		Parents: []*Node{
 			nodeParent,
 		},
-		Childs: nil,
-		Item:   nil,
+		Children: nil,
+		Item:     nil,
 	}
 
 	tests := []struct {
