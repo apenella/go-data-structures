@@ -48,6 +48,11 @@ func (n *Node) AddChild(child *Node) error {
 	if n == nil {
 		return errors.New("(graph::AddChild)", "Adding child to a nil node")
 	}
+
+	if child == nil {
+		return errors.New("(graph::AddChild)", "Adding nil parent to node")
+	}
+
 	if n.Children == nil || len(n.Children) == 0 {
 		n.Children = []*Node{}
 	}
