@@ -268,12 +268,12 @@ func TestDrawGraph(t *testing.T) {
 	}{
 		{
 			desc: "Print one root",
-			res: `|->  root
-  |->  level1-sibling1
-    |->  level2-sibling1
-  |->  level1-sibling2
-    |->  level2-sibling1
-    |->  level2-sibling2
+			res: ` ├─── root
+ │   ├─── level1-sibling1
+ │   │   ├─── level2-sibling1
+ │   ├─── level1-sibling2
+ │   │   ├─── level2-sibling1
+ │   │   ├─── level2-sibling2
 `,
 			graph: &Graph{
 				Root: []*Node{

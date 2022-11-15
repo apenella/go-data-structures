@@ -99,7 +99,7 @@ func (g *Graph) AddRelationship(parent, child *Node) error {
 func (g *Graph) DrawGraph(w io.Writer) {
 
 	for _, root := range g.Root {
-		prefix := "|-> "
+		prefix := " \u251C\u2500\u2500\u2500"
 		drawGrapRec(w, prefix, root)
 	}
 }
@@ -108,7 +108,7 @@ func (g *Graph) DrawGraph(w io.Writer) {
 func drawGrapRec(w io.Writer, prefix string, node *Node) {
 
 	fmt.Fprintln(w, prefix, node.Name)
-	prefix = "  " + prefix
+	prefix = " \u2502  " + prefix
 	for _, child := range node.Children {
 		drawGrapRec(w, prefix, child)
 	}
